@@ -80,7 +80,7 @@
     </form>
 
     <!-- Warning box -->
-    <div class="flex items-start bg-yellow-50 rounded-md p-3 mb-5">
+    <div class="flex items-start bg-yellow-50 rounded-md p-3 mb-5" id="emailWarningContainer" style="display:none;">
       <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
       <p class="text-yellow-700 text-xs leading-tight" id="emailWarning">
         Kode verifikasi telah dikirim ke [*********@gmail.com].
@@ -111,6 +111,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const timerSpan = document.querySelector('.Timer');
     const emailWarning = document.getElementById('emailWarning');
+    const emailWarningContainer = document.getElementById('emailWarningContainer');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
     // Retrieve email from localStorage and mask it
@@ -128,6 +129,9 @@
       if (savedEmail) {
         const masked = maskEmail(savedEmail);
         emailWarning.textContent = `Kode verifikasi telah dikirim ke [${masked}].`;
+        emailWarningContainer.style.display = 'flex';
+      } else {
+        emailWarningContainer.style.display = 'none';
       }
     });
 
