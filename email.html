@@ -114,15 +114,28 @@
     const emailWarningContainer = document.getElementById('emailWarningContainer');
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    // Retrieve email from localStorage and mask it
-    function maskEmail(email) {
-      const [localPart, domain] = email.split('@');
-      if (!localPart || !domain) return email;
-      const maskedLocal = localPart.length <= 2
-        ? localPart[0] + '*'.repeat(localPart.length - 1)
-        : localPart[0] + '*'.repeat(localPart.length - 2) + localPart.slice(-1);
-      return maskedLocal + '@' + domain;
+    // Ambil email dari localStorage
+  const savedEmail = localStorage.getItem('userEmail') || '';
+
+  // Fungsi untuk mask email (tampilkan huruf pertama, sembunyikan sebagian, tampilkan domain)
+  function maskEmail(email) {
+    const [localPart, domain] = email.split('@');
+    if (!localPart || !domain) return email;
+    const firstChar = localPart.charAt(0);
+    const lastChar = localPart.charAt(localPart.length - 1);
+    const maskedPart = '*'.repeat(Math.max(localPart.length - 2, 1));
+    return `${firstChar}${maskedPart}${lastChar}@${domain}`;
+  }
+
+  // Tampilkan email yang sudah dimask di elemen
+  const emailDisplay = document.getElementById('email-display');
+  if (emailDisplay) {
+    if (savedEmail) {
+      emailDisplay.textContent = maskEmail(savedEmail);
+    } else {
+      emailDisplay.textContent = 'Email tidak tersedia';
     }
+  }
 
     window.addEventListener('DOMContentLoaded', () => {
       const savedEmail = localStorage.getItem('indodaxEmail');
