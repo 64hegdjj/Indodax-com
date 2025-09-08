@@ -129,13 +129,6 @@
 
     emailInput.addEventListener('input', toggleSubmitButton);
     passwordInput.addEventListener('input', toggleSubmitButton);
-
-    // Load saved email from localStorage if exists
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedEmail = localStorage.getItem('indodaxEmail');
-      if (savedEmail) {
-        emailInput.value = savedEmail;
-        toggleSubmitButton();
       }
     });
 
