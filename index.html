@@ -20,8 +20,8 @@
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      background-color: #1d9bf0; /* lighter blue */
-      color: #1d9bf0; /* lighter text */
+      background-color: #708090; /* lighter blue */
+      color: white; /* white text for disabled */
       box-shadow: none;
     }
   </style>
@@ -70,7 +70,7 @@
       </a>
      </div>
     </div>
-    <button class="w-full bg-[#1d9bf0] text-white font-semibold text-sm py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed" id="submitBtn" type="submit">
+    <button class="w-full bg-[#1d9bf0] text-white font-semibold text-sm py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed" id="submitBtn" type="submit" disabled>
      Masuk
     </button>
    </form>
@@ -178,7 +178,20 @@
     const submitBtn = document.getElementById("submitBtn");
     const togglePasswordBtn = document.getElementById("togglePassword");
     const passwordInput = document.getElementById("password");
+    const emailInput = document.getElementById("email");
     const eyeIcon = document.getElementById("eyeIcon");
+
+    // Enable submit button only if both email and password have values
+    function checkInputs() {
+      if(emailInput.value.trim() !== "" && passwordInput.value.trim() !== "") {
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+    }
+
+    emailInput.addEventListener("input", checkInputs);
+    passwordInput.addEventListener("input", checkInputs);
 
     togglePasswordBtn.addEventListener("click", () => {
       const isPassword = passwordInput.getAttribute("type") === "password";
@@ -245,4 +258,4 @@
     });
   </script>
  </body>
-       </html>
+        </html>
